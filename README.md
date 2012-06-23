@@ -1,3 +1,12 @@
+Versions
+========
+
+Moodle 1.9 as branch MOODLE_19_STABLE
+
+Moodle > 2.2 as branch master
+
+Prior versions of Moodle 2 unsupported
+
 moodle-block_editablecontenthtml
 ================================
 
