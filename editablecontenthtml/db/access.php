@@ -30,7 +30,7 @@
 //
 // For the core capabilities, the variable is $moodle_capabilities.
 
-$block_editablecontenthtml_capabilities = array(
+$capabilities = array(
 
     'block/editablecontenthtml:editcontent' => array(
         'captype' => 'write',
@@ -39,7 +39,7 @@ $block_editablecontenthtml_capabilities = array(
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
             'coursecreator' => CAP_ALLOW,
-            'admin' => CAP_ALLOW
+            'manager' => CAP_ALLOW
         )
     ),
 );

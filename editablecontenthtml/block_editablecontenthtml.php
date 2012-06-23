@@ -3,8 +3,7 @@
 class block_editablecontenthtml extends block_base {
 
     function init() {
-        $this->title = get_string('editablecontenthtml', 'block_editablecontenthtml');
-        $this->version = 2012061200;
+        $this->title = get_string('pluginname', 'block_editablecontenthtml');
     }
 
     function applicable_formats() {
@@ -20,93 +19,102 @@ class block_editablecontenthtml extends block_base {
     }
 
     function get_content() {
-    	global $COURSE, $CFG, $USER;
-    	
+        global $CFG, $USER, $COURSE;
+
+        require_once($CFG->libdir . '/filelib.php');
+
         if ($this->content !== NULL) {
             return $this->content;
         }
 
-        if (!empty($this->instance->pinned) or $this->instance->pagetype === 'course-view') {
-            // fancy html allowed only on course page and in pinned blocks for security reasons
-            $filteropt = new stdClass;
+        $filteropt = new stdClass;
+        $filteropt->overflowdiv = true;
+        if ($this->content_is_trusted()) {
+            // fancy html allowed only on course, category and system blocks.
             $filteropt->noclean = true;
-        } else {
-            $filteropt = null;
         }
 
         $this->content = new stdClass;
-        $this->content->text = isset($this->config->text) ? format_text($this->config->text, FORMAT_HTML, $filteropt) : '';
+        $this->content->footer = '';
+        if (isset($this->config->text)) {
+            // rewrite url
+            $this->config->text = file_rewrite_pluginfile_urls($this->config->text, 'pluginfile.php', $this->context->id, 'block_editablecontenthtml', 'content', NULL);
+            // Default to FORMAT_HTML which is what will have been used before the
+            // editor was properly implemented for the block.
+            $format = FORMAT_HTML;
+            // Check to see if the format has been properly set on the config
+            if (isset($this->config->format)) {
+                $format = $this->config->format;
+            }
+            $this->content->text = format_text($this->config->text, $format, $filteropt);
+        } else {
+            $this->content->text = '';
+        }
+
+        unset($filteropt); // memory footprint
 
 		$context = get_context_instance(CONTEXT_BLOCK, $this->instance->id);
 		$streditcontent = get_string('editcontent', 'block_editablecontenthtml');
-        
-        if (has_capability('block/editablecontenthtml:editcontent', $context)){
+
+        if (has_capability('block/editablecontenthtml:editcontent', $context, $USER->id) && !@$this->config->lockcontent){
         	$this->content->footer = "<a href=\"{$CFG->wwwroot}/blocks/editablecontenthtml/edit.php?id={$this->instance->id}&amp;course={$COURSE->id}\">$streditcontent</a>";
         } else {
         	$this->content->footer = '';
         }
 
-        unset($filteropt); // memory footprint
-
         return $this->content;
     }
 
     /**
-     * Will be called before an instance of this block is backed up, so that any links in
-     * any links in any HTML fields on config can be encoded.
-     * @return string
+     * Serialize and store config data
      */
-    function get_backup_encoded_config() {
-        /// Prevent clone for non configured block instance. Delegate to parent as fallback.
-        if (empty($this->config)) {
-            return parent::get_backup_encoded_config();
-        }
-        $data = clone($this->config);
-        $data->text = backup_encode_absolute_links($data->text);
-        return base64_encode(serialize($data));
+    function instance_config_save($data, $nolongerused = false) {
+        global $DB;
+
+        $config = clone($data);
+        // Move embedded files into a proper filearea and adjust HTML links to match
+        $config->text = file_save_draft_area_files($data->text['itemid'], $this->context->id, 'block_editablecontenthtml', 'content', 0, array('subdirs'=>true), $data->text['text']);
+        $config->format = $data->text['format'];
+
+        parent::instance_config_save($config, $nolongerused);
     }
 
-    /**
-     * This function makes all the necessary calls to {@link restore_decode_content_links_worker()}
-     * function in order to decode contents of this block from the backup 
-     * format to destination site/course in order to mantain inter-activities 
-     * working in the backup/restore process. 
-     * 
-     * This is called from {@link restore_decode_content_links()} function in the restore process.
-     *
-     * NOTE: There is no block instance when this method is called.
-     *
-     * @param object $restore Standard restore object
-     * @return boolean
-     **/
-    function decode_content_links_caller($restore) {
-        global $CFG;
+    function instance_delete() {
+        global $DB;
+        $fs = get_file_storage();
+        $fs->delete_area_files($this->context->id, 'block_editablecontenthtml');
+        return true;
+    }
 
-        if ($restored_blocks = get_records_select("backup_ids","table_name = 'block_instance' AND backup_code = $restore->backup_unique_code AND new_id > 0", "", "new_id")) {
-            $restored_blocks = implode(',', array_keys($restored_blocks));
-            $sql = "SELECT bi.*
-                      FROM {$CFG->prefix}block_instance bi
-                           JOIN {$CFG->prefix}block b ON b.id = bi.blockid
-                     WHERE b.name = 'html' AND bi.id IN ($restored_blocks)"; 
+    function content_is_trusted() {
+        global $SCRIPT;
 
-            if ($instances = get_records_sql($sql)) {
-                foreach ($instances as $instance) {
-                    $blockobject = block_instance('html', $instance);
-                    $blockobject->config->text = restore_decode_absolute_links($blockobject->config->text);
-                    $blockobject->config->text = restore_decode_content_links_worker($blockobject->config->text, $restore);
-                    $blockobject->instance_config_commit($blockobject->pinned);
-                }
+        if (!$context = get_context_instance_by_id($this->instance->parentcontextid)) {
+            return false;
+        }
+        //find out if this block is on the profile page
+        if ($context->contextlevel == CONTEXT_USER) {
+            if ($SCRIPT === '/my/index.php') {
+                // this is exception - page is completely private, nobody else may see content there
+                // that is why we allow JS here
+                return true;
+            } else {
+                // no JS on public personal pages, it would be a big security issue
+                return false;
             }
         }
 
         return true;
     }
 
-    /*
-     * Hide the title bar when none set..
+    /**
+     * The block should only be dockable when the title of the block is not empty
+     * and when parent allows docking.
+     *
+     * @return bool
      */
-    function hide_header(){
-        return empty($this->config->title);
+    public function instance_can_be_docked() {
+        return (!empty($this->config->title) && parent::instance_can_be_docked());
     }
 }
-?>
+
