@@ -1,10 +1,19 @@
+Versions
+========
+
+Moodle 1.9 as branch MOODLE_19_STABLE
+
+Moodle >= 2.2 as branch master
+
+Prior versions of Moodle 2 unsupported
+
 moodle-block_editablecontenthtml
 ================================
 
 A simple HTML block variant that allows non editing roles to edit content based on a dedicated capability.
 
 This block provides a mean to let some non editing roles (i.e., manipulating activities) to edit some 
-content in a bloc in a course addressed to students. 
+content in a course block addressed to students. 
 
 This serves when using a course template policy that provides to non editing trainers academic 
 pre-written contents where some parts should be contextualized. 
