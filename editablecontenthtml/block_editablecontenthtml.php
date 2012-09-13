@@ -71,7 +71,13 @@ class block_editablecontenthtml extends block_base {
     function instance_config_save($data, $nolongerused = false) {
         global $DB;
 
+		// Why do i need do that ?         
+        if (!isset($_POST['config_lockcontent'])){
+        	unset($data->lockcontent);
+        }
+
         $config = clone($data);
+        if (empty($config->lockcontent)) $config->lockcontent = false;
         // Move embedded files into a proper filearea and adjust HTML links to match
         $config->text = file_save_draft_area_files($data->text['itemid'], $this->context->id, 'block_editablecontenthtml', 'content', 0, array('subdirs'=>true), $data->text['text']);
         $config->format = $data->text['format'];
