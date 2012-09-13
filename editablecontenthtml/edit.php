@@ -33,8 +33,8 @@
 	
 	if ($data = $mform->get_data()){
 	    if(empty($theBlock->config->lockcontent)){
-			$theBlock->config->text = stripslashes($data->text);
-			$theBlock->instance_config_commit();
+			$theBlock->config->text = $data->config_text;
+			$theBlock->instance_config_save($theBlock->config);
 		}
 
 		if ($courseid != SITEID){
@@ -51,7 +51,6 @@
 	$PAGE->set_heading($SITE->shortname);
 	echo $OUTPUT->header();
 	
-	$data->text = @$theBlock->config->text;
 	$data->id = $id;
 	$data->course = $courseid;
     if(!empty($theBlock->config->lockcontent)){

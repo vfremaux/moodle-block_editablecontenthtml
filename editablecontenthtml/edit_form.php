@@ -35,7 +35,7 @@ class block_editablecontenthtml_edit_form extends block_edit_form {
         $mform->setType('config_lockcontent', PARAM_BOOL);
 
         $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean'=>true, 'context'=>$this->block->context);
-        $mform->addElement('editor', 'config_text', get_string('configcontent', 'block_html'), null, $editoroptions);
+        $mform->addElement('editor', 'config_text', get_string('configcontent', 'block_editablecontenthtml'), null, $editoroptions);
         $mform->setType('config_text', PARAM_RAW); // XSS is prevented when printing the block contents and serving files
     }
 
@@ -48,7 +48,7 @@ class block_editablecontenthtml_edit_form extends block_edit_form {
             } else {
                 $currenttext = $text;
             }
-            $defaults->config_text['text'] = file_prepare_draft_area($draftid_editor, $this->block->context->id, 'block_html', 'content', 0, array('subdirs'=>true), $currenttext);
+            $defaults->config_text['text'] = file_prepare_draft_area($draftid_editor, $this->block->context->id, 'block_editablecontenthtml', 'content', 0, array('subdirs'=>true), $currenttext);
             $defaults->config_text['itemid'] = $draftid_editor;
             $defaults->config_text['format'] = @$this->block->config->format;
         } else {
