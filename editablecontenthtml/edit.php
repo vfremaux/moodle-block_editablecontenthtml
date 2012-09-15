@@ -33,7 +33,9 @@
 	
 	if ($data = $mform->get_data()){
 	    if(empty($theBlock->config->lockcontent)){
-			$theBlock->config->text = $data->config_text;
+			// change proposed by jcockrell 
+			// $theBlock->config->text = $data->config_text;
+			$theBlock->config->text = $data->text;
 			$theBlock->instance_config_save($theBlock->config);
 		}
 
@@ -53,6 +55,8 @@
 	
 	$data->id = $id;
 	$data->course = $courseid;
+	// change proposed by jcockrell 
+	$data->text = $theBlock->config->text;
     if(!empty($theBlock->config->lockcontent)){
 		echo $OUTPUT->box(get_string('contentislocked', 'block_editablecontenthtml'));
 		echo '<br/>';

@@ -79,8 +79,11 @@ class block_editablecontenthtml extends block_base {
         $config = clone($data);
         if (empty($config->lockcontent)) $config->lockcontent = false;
         // Move embedded files into a proper filearea and adjust HTML links to match
-        $config->text = file_save_draft_area_files($data->text['itemid'], $this->context->id, 'block_editablecontenthtml', 'content', 0, array('subdirs'=>true), $data->text['text']);
-        $config->format = $data->text['format'];
+		// change proposed by jcockrell 
+		$config->text = file_save_draft_area_files($data->text['itemid'], $this->context->id, 'block_editablecontenthtml', 'content', 0, array('subdirs'=>true), $data->text); 
+		$config->format = FORMAT_HTML;
+        // $config->text = file_save_draft_area_files($data->text['itemid'], $this->context->id, 'block_editablecontenthtml', 'content', 0, array('subdirs'=>true), $data->text['text']);
+        // $config->format = $data->text['format'];
 
         parent::instance_config_save($config, $nolongerused);
     }
