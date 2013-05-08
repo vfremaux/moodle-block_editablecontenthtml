@@ -1,4 +1,4 @@
-<?php //$Id: block_html.php,v 1.2 2010/07/09 23:01:19 vf Exp $
+<?php //$Id: block_editablecontenthtml.php,v 1.3 2012-09-15 19:23:51 vf Exp $
 
 class block_editablecontenthtml extends block_base {
 
@@ -80,7 +80,6 @@ class block_editablecontenthtml extends block_base {
         if (empty($config->lockcontent)) $config->lockcontent = false;
         // Move embedded files into a proper filearea and adjust HTML links to match
 		// change proposed by jcockrell 
-		$config->text = file_save_draft_area_files($data->text['itemid'], $this->context->id, 'block_editablecontenthtml', 'content', 0, array('subdirs'=>true), $data->text); 
 		$config->format = FORMAT_HTML;
         // $config->text = file_save_draft_area_files($data->text['itemid'], $this->context->id, 'block_editablecontenthtml', 'content', 0, array('subdirs'=>true), $data->text['text']);
         // $config->format = $data->text['format'];

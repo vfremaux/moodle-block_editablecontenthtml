@@ -32,6 +32,25 @@
 
 $capabilities = array(
 
+    'block/editablecontenthtml:addinstance' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_BLOCK,
+        'legacy' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
+    'block/editablecontenthtml:myaddinstance' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_BLOCK,
+        'legacy' => array(
+            'manager' => CAP_ALLOW
+        )
+    ),
+
     'block/editablecontenthtml:editcontent' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,

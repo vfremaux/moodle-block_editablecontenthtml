@@ -5,6 +5,7 @@ require $CFG->libdir.'/formslib.php';
 class EditableContentHtmlEditForm extends moodleform {
 	
 	var $block;
+	var $editoroptions;
 	
 	function __construct(&$block){
 		$this->block = $block;
@@ -12,31 +13,32 @@ class EditableContentHtmlEditForm extends moodleform {
 	} 
 	
 	function definition(){
-        global $CFG;
+        global $CFG, $COURSE;
+
+		$maxbytes = $COURSE->maxbytes; // TODO: add some setting	
+		$this->editoroptions = array('trusttext' => true, 'subdirs' => false, 'maxfiles' => EDITOR_UNLIMITED_FILES, 'maxbytes' => $maxbytes, 'context' => $this->block->context);
 
         $mform =& $this->_form;
 
 		$mform->addElement('hidden', 'id');
 		$mform->addElement('hidden', 'course');
-		$mform->addElement('htmleditor', 'text', get_string('configcontent', 'block_editablecontenthtml'));
+		$mform->addElement('editor', 'config_text_editor', get_string('configcontent', 'block_editablecontenthtml'), null, $this->editoroptions);
+
 
 		$this->add_action_buttons();    
 	}	
 
     function set_data($defaults) {
+
         if (!empty($this->block->config) && is_object($this->block->config)) {
-            $text = $this->block->config->text;
-            $draftid_editor = file_get_submitted_draft_itemid('config_text');
-            if (empty($text)) {
-                $currenttext = '';
-            } else {
-                $currenttext = $text;
-            }
-            $defaults->config_text['text'] = file_prepare_draft_area($draftid_editor, $this->block->context->id, 'block_editablecontenthtml', 'content', 0, array('subdirs'=>true), $currenttext);
-            $defaults->config_text['itemid'] = $draftid_editor;
-            $defaults->config_text['format'] = $this->block->config->format;
+            $draftid_editor = file_get_submitted_draft_itemid('config_text_editor');
+            $defaults->config_text = $this->block->config->text;
+            $defaults->config_textformat = $this->block->config->format;
+            $currenttext = file_prepare_draft_area($draftid_editor, $this->block->context->id, 'block_editablecontenthtml', 'config_text_editor', 0, array('subdirs'=>true), $defaults->config_text);
+			$defaults = file_prepare_standard_editor($defaults, 'config_text', $this->editoroptions, $this->block->context, 'block_editablecontenthtml', 'content', 0);
+			$defaults->config_text = array('text' => $currenttext, 'format' => $this->block->config->format, 'itemid' => $draftid_editor);
         } else {
-            $text = '';
+            $defaults->config_text = '';
         }
 
         if (!$this->block->user_can_edit() && !empty($this->block->config->title)) {
@@ -52,7 +54,7 @@ class EditableContentHtmlEditForm extends moodleform {
         unset($this->block->config->text);
         parent::set_data($defaults);
         // restore $text
-        $this->block->config->text = $text;
+        $this->block->config->text = $defaults->config_text;
         if (isset($title)) {
             // Reset the preserved title
             $this->block->config->title = $title;

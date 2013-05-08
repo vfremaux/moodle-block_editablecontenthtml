@@ -35,7 +35,14 @@
 	    if(empty($theBlock->config->lockcontent)){
 			// change proposed by jcockrell 
 			// $theBlock->config->text = $data->config_text;
-			$theBlock->config->text = $data->text;
+
+			$draftid_editor = file_get_submitted_draft_itemid('config_text_editor');
+			$data->config_text = file_save_draft_area_files($draftid_editor, $blockcontext->id, 'block_editablecontenthtml', 'content', 0, $mform->editoroptions, $data->config_text_editor['text']);
+	    	$config = file_postupdate_standard_editor($data, 'config_text', $mform->editoroptions, $blockcontext, 'block_editablecontenthtml', 'content', 0);
+			$theBlock->config->text = $config->config_text;
+			unset($theBlock->config->config_text);
+			unset($theBlock->config->config_texttrust);
+			unset($theBlock->config->config_textformat);
 			$theBlock->instance_config_save($theBlock->config);
 		}
 
