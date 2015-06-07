@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -45,7 +44,7 @@ function block_editablecontenthtml_pluginfile($course, $birecord_or_cm, $context
         send_file_not_found();
     }
 
-    if ($parentcontext = get_context_instance_by_id($birecord_or_cm->parentcontextid)) {
+    if ($parentcontext = context::instance_by_id($birecord_or_cm->parentcontextid)) {
         if ($parentcontext->contextlevel == CONTEXT_USER) {
             // force download on all personal pages including /my/
             //because we do not have reliable way to find out from where this is used

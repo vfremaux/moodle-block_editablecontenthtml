@@ -1,8 +1,8 @@
 <?php
 // Capabilities
-$string['editablecontenthtml:addinstance'] = 'Peut ajouter une instance';
-$string['editablecontenthtml:editcontent'] = 'Peut changer le contenu';
-$string['editablecontenthtml:myaddinstance'] = 'Peut ajouter une instance à la page personnalisée';
+$string['editablecontenthtml:addinstance'] = 'Ajouter un bloc "Html Editable"';
+$string['editablecontenthtml:editcontent'] = 'Changer le contenu';
+$string['editablecontenthtml:myaddinstance'] = 'Ajouter un bloc "Html Editable" à Ma page';
 
 $string['blockname'] = 'Bloc HTML Editable';
 $string['pluginname'] = 'Bloc HTML Editable';

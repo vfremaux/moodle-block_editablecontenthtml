@@ -3,40 +3,44 @@
 require $CFG->libdir.'/formslib.php';
 
 class EditableContentHtmlEditForm extends moodleform {
-	
-	var $block;
-	var $editoroptions;
-	
-	function __construct(&$block){
-		$this->block = $block;
-		parent::__construct();
-	} 
-	
-	function definition(){
+
+    var $block;
+    var $editoroptions;
+
+    function __construct(&$block) {
+        $this->block = $block;
+        parent::__construct();
+    } 
+    
+    function definition() {
         global $CFG, $COURSE;
 
-		$maxbytes = $COURSE->maxbytes; // TODO: add some setting	
-		$this->editoroptions = array('trusttext' => true, 'subdirs' => false, 'maxfiles' => EDITOR_UNLIMITED_FILES, 'maxbytes' => $maxbytes, 'context' => $this->block->context);
+        $maxbytes = $COURSE->maxbytes; // TODO: add some setting.
+        $this->editoroptions = array('trusttext' => true, 'subdirs' => false, 'maxfiles' => EDITOR_UNLIMITED_FILES, 'maxbytes' => $maxbytes, 'context' => $this->block->context);
 
         $mform =& $this->_form;
 
-		$mform->addElement('hidden', 'id');
-		$mform->addElement('hidden', 'course');
-		$mform->addElement('editor', 'config_text_editor', get_string('configcontent', 'block_editablecontenthtml'), null, $this->editoroptions);
+        $mform->addElement('hidden', 'id');
+        $mform->setType('id', PARAM_INT);
 
+        $mform->addElement('hidden', 'course');
+        $mform->setType('course', PARAM_INT);
 
-		$this->add_action_buttons();    
-	}	
+        $mform->addElement('editor', 'config_text_editor', get_string('configcontent', 'block_editablecontenthtml'), null, $this->editoroptions);
+        $mform->setType('course', PARAM_CLEANHTML);
+
+        $this->add_action_buttons();
+    }    
 
     function set_data($defaults) {
 
         if (!empty($this->block->config) && is_object($this->block->config)) {
             $draftid_editor = file_get_submitted_draft_itemid('config_text_editor');
-            $defaults->config_text = $this->block->config->text;
-            $defaults->config_textformat = $this->block->config->format;
+            $defaults->config_text = @$this->block->config->text;
+            $defaults->config_textformat = @$this->block->config->format;
             $currenttext = file_prepare_draft_area($draftid_editor, $this->block->context->id, 'block_editablecontenthtml', 'config_text_editor', 0, array('subdirs'=>true), $defaults->config_text);
-			$defaults = file_prepare_standard_editor($defaults, 'config_text', $this->editoroptions, $this->block->context, 'block_editablecontenthtml', 'content', 0);
-			$defaults->config_text = array('text' => $currenttext, 'format' => $this->block->config->format, 'itemid' => $draftid_editor);
+            $defaults = file_prepare_standard_editor($defaults, 'config_text', $this->editoroptions, $this->block->context, 'block_editablecontenthtml', 'content', 0);
+            $defaults->config_text = array('text' => $currenttext, 'format' => $defaults->config_textformat, 'itemid' => $draftid_editor);
         } else {
             $defaults->config_text = '';
         }

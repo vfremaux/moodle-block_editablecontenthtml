@@ -1,4 +1,18 @@
-<?php //$Id: block_editablecontenthtml.php,v 1.3 2012-09-15 19:23:51 vf Exp $
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 class block_editablecontenthtml extends block_base {
 
@@ -53,13 +67,13 @@ class block_editablecontenthtml extends block_base {
 
         unset($filteropt); // memory footprint
 
-		$context = get_context_instance(CONTEXT_BLOCK, $this->instance->id);
-		$streditcontent = get_string('editcontent', 'block_editablecontenthtml');
+        $context = context_block::instance($this->instance->id);
+        $streditcontent = get_string('editcontent', 'block_editablecontenthtml');
 
         if (has_capability('block/editablecontenthtml:editcontent', $context, $USER->id) && !@$this->config->lockcontent){
-        	$this->content->footer = "<a href=\"{$CFG->wwwroot}/blocks/editablecontenthtml/edit.php?id={$this->instance->id}&amp;course={$COURSE->id}\">$streditcontent</a>";
+            $this->content->footer = "<a href=\"{$CFG->wwwroot}/blocks/editablecontenthtml/edit.php?id={$this->instance->id}&amp;course={$COURSE->id}\">$streditcontent</a>";
         } else {
-        	$this->content->footer = '';
+            $this->content->footer = '';
         }
 
         return $this->content;
@@ -71,16 +85,15 @@ class block_editablecontenthtml extends block_base {
     function instance_config_save($data, $nolongerused = false) {
         global $DB;
 
-		// Why do i need do that ?         
-        if (!isset($_POST['config_lockcontent'])){
-        	unset($data->lockcontent);
+        // Why do i need do that ?
+        if (!isset($_POST['config_lockcontent'])) {
+            unset($data->lockcontent);
         }
 
         $config = clone($data);
         if (empty($config->lockcontent)) $config->lockcontent = false;
-        // Move embedded files into a proper filearea and adjust HTML links to match
-		// change proposed by jcockrell 
-		$config->format = FORMAT_HTML;
+        // Move embedded files into a proper filearea and adjust HTML links to match change proposed by jcockrell 
+        $config->format = FORMAT_HTML;
         // $config->text = file_save_draft_area_files($data->text['itemid'], $this->context->id, 'block_editablecontenthtml', 'content', 0, array('subdirs'=>true), $data->text['text']);
         // $config->format = $data->text['format'];
 
@@ -97,17 +110,16 @@ class block_editablecontenthtml extends block_base {
     function content_is_trusted() {
         global $SCRIPT;
 
-        if (!$context = get_context_instance_by_id($this->instance->parentcontextid)) {
+        if (!$context = context::instance_by_id($this->instance->parentcontextid)) {
             return false;
         }
-        //find out if this block is on the profile page
+        // Find out if this block is on the profile page.
         if ($context->contextlevel == CONTEXT_USER) {
             if ($SCRIPT === '/my/index.php') {
-                // this is exception - page is completely private, nobody else may see content there
-                // that is why we allow JS here
+                // This is exception - page is completely private, nobody else may see content there that is why we allow JS here
                 return true;
             } else {
-                // no JS on public personal pages, it would be a big security issue
+                // No JS on public personal pages, it would be a big security issue.
                 return false;
             }
         }
@@ -125,4 +137,3 @@ class block_editablecontenthtml extends block_base {
         return (!empty($this->config->title) && parent::instance_can_be_docked());
     }
 }
-
