@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * @package     block_editablecontenthtml
+ * @category    blocks
+ * @author      Valery Fremaux <valery.fremaux@gmail.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 require('../../config.php');
 require_once($CFG->dirroot.'/blocks/editablecontenthtml/content_edit_form.php');
 
@@ -30,6 +37,7 @@ if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     print_error('invalidcourseid');
 }
 
+// Security.
 require_login($course);
 
 $theBlock = block_instance('editablecontenthtml', $instance);
@@ -55,6 +63,11 @@ if ($data = $mform->get_data()) {
         $draftid_editor = file_get_submitted_draft_itemid('config_text_editor');
         $data->config_text = file_save_draft_area_files($draftid_editor, $blockcontext->id, 'block_editablecontenthtml', 'content', 0, $mform->editoroptions, $data->config_text_editor['text']);
         $config = file_postupdate_standard_editor($data, 'config_text', $mform->editoroptions, $blockcontext, 'block_editablecontenthtml', 'content', 0);
+
+        if (!isset($theBlock->config)) {
+            $theBlock->config = new StdClass();
+        }
+
         $theBlock->config->text = $config->config_text;
         unset($theBlock->config->config_text);
         unset($theBlock->config->config_texttrust);

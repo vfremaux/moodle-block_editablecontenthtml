@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Form for editing HTML block instances.
  *
- * @package   block_editablecontenthtml
- * @copyright 2012 Valery Fremaux
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    block_editablecontenthtml
+ * @category   blocks
+ * @copyright  2012 Valery Fremaux
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 class block_editablecontenthtml_edit_form extends block_edit_form {
@@ -41,7 +44,11 @@ class block_editablecontenthtml_edit_form extends block_edit_form {
 
     function set_data($defaults, &$files = null) {
         if (!empty($this->block->config) && is_object($this->block->config)) {
-            $text = $this->block->config->text;
+            if (is_array($this->block->config->text)) {
+                $text = $this->block->config->text['text'];
+            } else {
+                $text = $this->block->config->text;
+            }
             $draftid_editor = file_get_submitted_draft_itemid('config_text');
             if (empty($text)) {
                 $currenttext = '';
@@ -66,8 +73,11 @@ class block_editablecontenthtml_edit_form extends block_edit_form {
         // have to delete text here, otherwise parent::set_data will empty content
         // of editor
         unset($this->block->config->text);
-        parent::set_data($defaults);
+        parent::set_data($defaults, $files);
         // restore $text
+        if (!isset($this->block->config)){
+            $this->block->config = new StdClass();
+        }
         $this->block->config->text = $text;
         if (isset($title)) {
             // Reset the preserved title

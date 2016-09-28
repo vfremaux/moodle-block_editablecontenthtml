@@ -17,8 +17,8 @@
 /**
  * Version details
  *
- * @package    block
- * @subpackage editablecontenthtml
+ * @package    block_editablecontenthtml
+ * @category   blocks
  * @copyright  2013 Valery Fremaux (valery.fremaux@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,3 +30,6 @@ $plugin->requires  = 2011120500;        // Requires this Moodle version
 $plugin->component = 'block_editablecontenthtml';  // Full name of the plugin (used for diagnostics)
 $plugin->maturity = MATURITY_RC;  
 $plugin->release = '2.7.0 (build 2013062800)'; 
+
+// Non moodle attributes.
+$plugin->codeincrement = '2.7.0000';

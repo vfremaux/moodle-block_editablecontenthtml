@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * @package     block_editablecontenthtml
+ * @category    blocks
+ * @author     Valery Fremaux <valery.fremaux@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 class block_editablecontenthtml extends block_base {
 
     function init() {
@@ -25,7 +34,7 @@ class block_editablecontenthtml extends block_base {
     }
 
     function specialization() {
-        $this->title = isset($this->config->title) ? format_string($this->config->title) : format_string(get_string('newhtmlblock', 'block_editablecontenthtml'));
+        $this->title = !empty($this->config->title) ? format_string($this->config->title) : format_string(get_string('newhtmlblock', 'block_editablecontenthtml'));
     }
 
     function instance_allow_multiple() {
@@ -52,15 +61,12 @@ class block_editablecontenthtml extends block_base {
         $this->content->footer = '';
         if (isset($this->config->text)) {
             // rewrite url
-            $this->config->text = file_rewrite_pluginfile_urls($this->config->text, 'pluginfile.php', $this->context->id, 'block_editablecontenthtml', 'content', NULL);
+            $text = file_rewrite_pluginfile_urls($this->config->text['text'], 'pluginfile.php', $this->context->id, 'block_editablecontenthtml', 'content', NULL);
             // Default to FORMAT_HTML which is what will have been used before the
             // editor was properly implemented for the block.
-            $format = FORMAT_HTML;
+            $format = $this->config->text['format'];
             // Check to see if the format has been properly set on the config
-            if (isset($this->config->format)) {
-                $format = $this->config->format;
-            }
-            $this->content->text = format_text($this->config->text, $format, $filteropt);
+            $this->content->text = format_text($text, $format, $filteropt);
         } else {
             $this->content->text = '';
         }
@@ -71,7 +77,8 @@ class block_editablecontenthtml extends block_base {
         $streditcontent = get_string('editcontent', 'block_editablecontenthtml');
 
         if (has_capability('block/editablecontenthtml:editcontent', $context, $USER->id) && !@$this->config->lockcontent){
-            $this->content->footer = "<a href=\"{$CFG->wwwroot}/blocks/editablecontenthtml/edit.php?id={$this->instance->id}&amp;course={$COURSE->id}\">$streditcontent</a>";
+            $linkurl = new moodle_url('/blocks/editablecontenthtml/edit.php', array('id' => $this->instance->id, 'course' => $COURSE->id));
+            $this->content->footer = '<a href="'.$linkurl.'">'.$streditcontent.'</a>';
         } else {
             $this->content->footer = '';
         }

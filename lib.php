@@ -14,12 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Form for editing HTML block instances.
  *
- * @package   block_editablecontenthtml
- * @copyright 2012 Valery Fremaux (http://www.ethnoinformatique.fr)
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    block_editablecontenthtml
+ * @category   blocks
+ * @copyright  2012 Valery Fremaux (http://www.ethnoinformatique.fr)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 function block_editablecontenthtml_pluginfile($course, $birecord_or_cm, $context, $filearea, $args, $forcedownload) {
