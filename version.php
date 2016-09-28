@@ -20,17 +20,17 @@
  * @package     block_editablecontenthtml
  * @category    blocks
  * @author      Valery Fremaux <valery.fremaux@gmail.com>
- * @copyright   2013 Valery Fremaux (valery.fremaux@gmail.com)
+ * @copyright   2013 onwards Valery Fremaux (http://www.mylearningfactory.com)
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2015032400;        // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2015050500;        // Requires this Moodle version
-$plugin->component = 'block_editablecontenthtml';  // Full name of the plugin (used for diagnostics)
-$plugin->maturity = MATURITY_RC;  
-$plugin->release = '2.9.0 (build 2013062800)'; 
+$plugin->version   = 2016083100;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires  = 2015111000;        // Requires this Moodle version.
+$plugin->component = 'block_editablecontenthtml';  // Full name of the plugin (used for diagnostics).
+$plugin->maturity = MATURITY_RC;
+$plugin->release = '3.0.0 (build 2016083100)';
 
-// Non moodle attributes.
-$plugin->codeincrement = '2.9.0000';
+// Non Moodle attributes.
+$plugin->codeincrement = '3.0.0000';
