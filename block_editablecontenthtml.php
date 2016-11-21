@@ -34,7 +34,7 @@ class block_editablecontenthtml extends block_base {
     }
 
     function specialization() {
-        $this->title = !empty($this->config->title) ? format_string($this->config->title) : format_string(get_string('newhtmlblock', 'block_editablecontenthtml'));
+        $this->title = isset($this->config->title) ? format_string($this->config->title) : format_string(get_string('newhtmlblock', 'block_editablecontenthtml'));
     }
 
     function instance_allow_multiple() {
@@ -61,12 +61,15 @@ class block_editablecontenthtml extends block_base {
         $this->content->footer = '';
         if (isset($this->config->text)) {
             // rewrite url
-            $text = file_rewrite_pluginfile_urls($this->config->text['text'], 'pluginfile.php', $this->context->id, 'block_editablecontenthtml', 'content', NULL);
+            $this->config->text = file_rewrite_pluginfile_urls($this->config->text, 'pluginfile.php', $this->context->id, 'block_editablecontenthtml', 'content', NULL);
             // Default to FORMAT_HTML which is what will have been used before the
             // editor was properly implemented for the block.
-            $format = $this->config->text['format'];
+            $format = FORMAT_HTML;
             // Check to see if the format has been properly set on the config
-            $this->content->text = format_text($text, $format, $filteropt);
+            if (isset($this->config->format)) {
+                $format = $this->config->format;
+            }
+            $this->content->text = format_text($this->config->text, $format, $filteropt);
         } else {
             $this->content->text = '';
         }
@@ -77,8 +80,7 @@ class block_editablecontenthtml extends block_base {
         $streditcontent = get_string('editcontent', 'block_editablecontenthtml');
 
         if (has_capability('block/editablecontenthtml:editcontent', $context, $USER->id) && !@$this->config->lockcontent){
-            $linkurl = new moodle_url('/blocks/editablecontenthtml/edit.php', array('id' => $this->instance->id, 'course' => $COURSE->id));
-            $this->content->footer = '<a href="'.$linkurl.'">'.$streditcontent.'</a>';
+            $this->content->footer = "<a href=\"{$CFG->wwwroot}/blocks/editablecontenthtml/edit.php?id={$this->instance->id}&amp;course={$COURSE->id}\">$streditcontent</a>";
         } else {
             $this->content->footer = '';
         }

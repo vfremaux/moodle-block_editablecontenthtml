@@ -44,9 +44,9 @@ class block_editablecontenthtml_edit_form extends block_edit_form {
 
     function set_data($defaults, &$files = null) {
         if (!empty($this->block->config) && is_object($this->block->config)) {
-        	if (is_array($this->block->config->text)) {
-                $text = $this->block->config->text['text'];
-            } else {
+        	if (is_array($this->block->config->text)){
+	            $text = $this->block->config->text['text'];
+        	} else {
 	            $text = $this->block->config->text;
 	        }
             $draftid_editor = file_get_submitted_draft_itemid('config_text');
@@ -76,7 +76,7 @@ class block_editablecontenthtml_edit_form extends block_edit_form {
         parent::set_data($defaults);
         // restore $text
         if (!isset($this->block->config)){
-            $this->block->config = new StdClass();
+        	$this->block->config = new StdClass();
         }
         $this->block->config->text = $text;
         if (isset($title)) {
