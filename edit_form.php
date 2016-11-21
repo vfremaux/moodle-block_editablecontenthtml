@@ -39,7 +39,7 @@ class block_editablecontenthtml_edit_form extends block_edit_form {
 
         $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true, 'context' => $this->block->context);
         $mform->addElement('editor', 'config_text', get_string('configcontent', 'block_editablecontenthtml'), null, $editoroptions);
-        $mform->setType('config_text', PARAM_RAW); // XSS is prevented when printing the block contents and serving files
+        $mform->setType('config_text', PARAM_RAW); // XSS is prevented when printing the block contents and serving files.
     }
 
     public function set_data($defaults, &$files = null) {
@@ -49,16 +49,16 @@ class block_editablecontenthtml_edit_form extends block_edit_form {
             } else {
                 $text = $this->block->config->text;
             }
-            $draftid_editor = file_get_submitted_draft_itemid('config_text');
+            $draftideditor = file_get_submitted_draft_itemid('config_text');
             if (empty($text)) {
                 $currenttext = '';
             } else {
                 $currenttext = $text;
             }
-            $defaults->config_text['text'] = file_prepare_draft_area($draftid_editor, $this->block->context->id,
+            $defaults->config_text['text'] = file_prepare_draft_area($draftideditor, $this->block->context->id,
                                                                      'block_editablecontenthtml', 'content', 0,
                                                                      array('subdirs' => true), $currenttext);
-            $defaults->config_text['itemid'] = $draftid_editor;
+            $defaults->config_text['itemid'] = $draftideditor;
             $defaults->config_text['format'] = @$this->block->config->format;
         } else {
             $text = '';
@@ -79,7 +79,7 @@ class block_editablecontenthtml_edit_form extends block_edit_form {
         unset($this->block->config->text);
         parent::set_data($defaults, $files);
         // Restore text.
-        if (!isset($this->block->config)){
+        if (!isset($this->block->config)) {
             $this->block->config = new StdClass();
         }
         $this->block->config->text = $text;

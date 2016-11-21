@@ -23,7 +23,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require $CFG->libdir.'/formslib.php';
+require($CFG->libdir.'/formslib.php');
 
 class EditableContentHtmlEditForm extends moodleform {
 
@@ -36,7 +36,7 @@ class EditableContentHtmlEditForm extends moodleform {
     }
 
     public function definition() {
-        global $CFG, $COURSE;
+        global $COURSE;
 
         $maxbytes = $COURSE->maxbytes; // TODO: add some setting.
         $this->editoroptions = array('trusttext' => true,
@@ -62,14 +62,16 @@ class EditableContentHtmlEditForm extends moodleform {
     public function set_data($defaults) {
 
         if (!empty($this->block->config) && is_object($this->block->config)) {
-            $draftid_editor = file_get_submitted_draft_itemid('config_text_editor');
+            $draftideditor = file_get_submitted_draft_itemid('config_text_editor');
             $defaults->config_text = @$this->block->config->text;
             $defaults->config_textformat = @$this->block->config->format;
-            $currenttext = file_prepare_draft_area($draftid_editor, $this->block->context->id, 'block_editablecontenthtml',
+            $currenttext = file_prepare_draft_area($draftideditor, $this->block->context->id, 'block_editablecontenthtml',
                                                    'config_text_editor', 0, array('subdirs' => true), $defaults->config_text);
             $defaults = file_prepare_standard_editor($defaults, 'config_text', $this->editoroptions, $this->block->context,
                                                      'block_editablecontenthtml', 'content', 0);
-            $defaults->config_text = array('text' => $currenttext, 'format' => $defaults->config_textformat, 'itemid' => $draftid_editor);
+            $defaults->config_text = array('text' => $currenttext,
+                                           'format' => $defaults->config_textformat,
+                                           'itemid' => $draftideditor);
         } else {
             $defaults->config_text = '';
         }
@@ -88,7 +90,7 @@ class EditableContentHtmlEditForm extends moodleform {
          */
         unset($this->block->config->text);
         parent::set_data($defaults);
-        // Restore $text
+        // Restore text.
         $this->block->config->text = $defaults->config_text;
         if (isset($title)) {
             // Reset the preserved title.

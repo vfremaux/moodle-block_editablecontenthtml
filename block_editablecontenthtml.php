@@ -33,7 +33,8 @@ class block_editablecontenthtml extends block_base {
     }
 
     public function specialization() {
-        $this->title = !empty($this->config->title) ? format_string($this->config->title) : format_string(get_string('newhtmlblock', 'block_editablecontenthtml'));
+        $defaulttitle = format_string(get_string('newhtmlblock', 'block_editablecontenthtml'));
+        $this->title = !empty($this->config->title) ? format_string($this->config->title) : $defaulttitle;
     }
 
     public function instance_allow_multiple() {
@@ -60,7 +61,8 @@ class block_editablecontenthtml extends block_base {
         $this->content->footer = '';
         if (isset($this->config->text)) {
             // Rewrite url.
-            $text = file_rewrite_pluginfile_urls($this->config->text['text'], 'pluginfile.php', $this->context->id, 'block_editablecontenthtml', 'content', NULL);
+            $text = file_rewrite_pluginfile_urls($this->config->text['text'], 'pluginfile.php', $this->context->id,
+                                                 'block_editablecontenthtml', 'content', null);
             /*
              * Default to FORMAT_HTML which is what will have been used before the
              * editor was properly implemented for the block.
@@ -77,8 +79,9 @@ class block_editablecontenthtml extends block_base {
         $context = context_block::instance($this->instance->id);
         $streditcontent = get_string('editcontent', 'block_editablecontenthtml');
 
-        if (has_capability('block/editablecontenthtml:editcontent', $context, $USER->id) && !@$this->config->lockcontent){
-            $linkurl = new moodle_url('/blocks/editablecontenthtml/edit.php', array('id' => $this->instance->id, 'course' => $COURSE->id));
+        if (has_capability('block/editablecontenthtml:editcontent', $context, $USER->id) && !@$this->config->lockcontent) {
+            $params = array('id' => $this->instance->id, 'course' => $COURSE->id);
+            $linkurl = new moodle_url('/blocks/editablecontenthtml/edit.php', $params);
             $this->content->footer = '<a href="'.$linkurl.'">'.$streditcontent.'</a>';
         } else {
             $this->content->footer = '';
@@ -91,7 +94,6 @@ class block_editablecontenthtml extends block_base {
      * Serialize and store config data
      */
     public function instance_config_save($data, $nolongerused = false) {
-        global $DB;
 
         // Why do i need do that ?
         if (!isset($_POST['config_lockcontent'])) {
@@ -99,7 +101,9 @@ class block_editablecontenthtml extends block_base {
         }
 
         $config = clone($data);
-        if (empty($config->lockcontent)) $config->lockcontent = false;
+        if (empty($config->lockcontent)) {
+            $config->lockcontent = false;
+        }
         // Move embedded files into a proper filearea and adjust HTML links to match change proposed by jcockrell.
         $config->format = FORMAT_HTML;
 
@@ -107,7 +111,6 @@ class block_editablecontenthtml extends block_base {
     }
 
     public function instance_delete() {
-        global $DB;
         $fs = get_file_storage();
         $fs->delete_area_files($this->context->id, 'block_editablecontenthtml');
         return true;

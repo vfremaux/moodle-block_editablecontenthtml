@@ -29,7 +29,7 @@ $id = required_param('id', PARAM_INT);
 
 $PAGE->set_url(new moodle_url('/blocks/editablecontenthtml/edit.php', array('course' => $courseid, 'id' => $id)));
 
-if (!$instance = $DB->get_record('block_instances', array('id' =>  $id))) {
+if (!$instance = $DB->get_record('block_instances', array('id' => $id))) {
     print_error('errorbadblockinstance', 'block_editablecontenthtml');
 }
 
@@ -58,8 +58,8 @@ if ($mform->is_cancelled()) {
 if ($data = $mform->get_data()) {
     if (empty($theblock->config->lockcontent)) {
 
-        $draftid_editor = file_get_submitted_draft_itemid('config_text_editor');
-        $data->config_text = file_save_draft_area_files($draftid_editor, $blockcontext->id, 'block_editablecontenthtml',
+        $draftideditor = file_get_submitted_draft_itemid('config_text_editor');
+        $data->config_text = file_save_draft_area_files($draftideditor, $blockcontext->id, 'block_editablecontenthtml',
                                                         'content', 0, $mform->editoroptions, $data->config_text_editor['text']);
         $config = file_postupdate_standard_editor($data, 'config_text', $mform->editoroptions, $blockcontext,
                                                   'block_editablecontenthtml', 'content', 0);

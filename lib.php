@@ -24,8 +24,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-function block_editablecontenthtml_pluginfile($course, $birecord_or_cm, $context, $filearea, $args, $forcedownload) {
-    global $SCRIPT;
+function block_editablecontenthtml_pluginfile($course, $birecordorcm, $context, $filearea, $args, $forcedownload) {
 
     if ($context->contextlevel != CONTEXT_BLOCK) {
         send_file_not_found();
@@ -47,7 +46,7 @@ function block_editablecontenthtml_pluginfile($course, $birecord_or_cm, $context
         send_file_not_found();
     }
 
-    if ($parentcontext = context::instance_by_id($birecord_or_cm->parentcontextid)) {
+    if ($parentcontext = context::instance_by_id($birecordorcm->parentcontextid)) {
         if ($parentcontext->contextlevel == CONTEXT_USER) {
             /*
              * force download on all personal pages including /my/
@@ -61,6 +60,6 @@ function block_editablecontenthtml_pluginfile($course, $birecord_or_cm, $context
     }
 
     session_get_instance()->write_close();
-    send_stored_file($file, 60*60, 0, $forcedownload);
+    send_stored_file($file, 60 * 60, 0, $forcedownload);
 }
 
