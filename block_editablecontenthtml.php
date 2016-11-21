@@ -14,65 +14,64 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * @package     block_editablecontenthtml
  * @category    blocks
  * @author     Valery Fremaux <valery.fremaux@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
 class block_editablecontenthtml extends block_base {
 
-    public function init() {
+    function init() {
         $this->title = get_string('pluginname', 'block_editablecontenthtml');
     }
 
-    public function applicable_formats() {
+    function applicable_formats() {
         return array('all' => true);
     }
 
-    public function specialization() {
+    function specialization() {
         $this->title = !empty($this->config->title) ? format_string($this->config->title) : format_string(get_string('newhtmlblock', 'block_editablecontenthtml'));
     }
 
-    public function instance_allow_multiple() {
+    function instance_allow_multiple() {
         return true;
     }
 
-    public function get_content() {
+    function get_content() {
         global $CFG, $USER, $COURSE;
 
         require_once($CFG->libdir . '/filelib.php');
 
-        if ($this->content !== null) {
+        if ($this->content !== NULL) {
             return $this->content;
         }
 
         $filteropt = new stdClass;
         $filteropt->overflowdiv = true;
         if ($this->content_is_trusted()) {
-            // Fancy html allowed only on course, category and system blocks.
+            // fancy html allowed only on course, category and system blocks.
             $filteropt->noclean = true;
         }
 
         $this->content = new stdClass;
         $this->content->footer = '';
         if (isset($this->config->text)) {
-            // Rewrite url.
+            // rewrite url
             $text = file_rewrite_pluginfile_urls($this->config->text['text'], 'pluginfile.php', $this->context->id, 'block_editablecontenthtml', 'content', NULL);
-            /*
-             * Default to FORMAT_HTML which is what will have been used before the
-             * editor was properly implemented for the block.
-             */
+            // Default to FORMAT_HTML which is what will have been used before the
+            // editor was properly implemented for the block.
             $format = $this->config->text['format'];
-            // Check to see if the format has been properly set on the config.
+            // Check to see if the format has been properly set on the config
             $this->content->text = format_text($text, $format, $filteropt);
         } else {
             $this->content->text = '';
         }
 
-        unset($filteropt); // Memory footprint.
+        unset($filteropt); // memory footprint
 
         $context = context_block::instance($this->instance->id);
         $streditcontent = get_string('editcontent', 'block_editablecontenthtml');
@@ -90,7 +89,7 @@ class block_editablecontenthtml extends block_base {
     /**
      * Serialize and store config data
      */
-    public function instance_config_save($data, $nolongerused = false) {
+    function instance_config_save($data, $nolongerused = false) {
         global $DB;
 
         // Why do i need do that ?
@@ -100,20 +99,22 @@ class block_editablecontenthtml extends block_base {
 
         $config = clone($data);
         if (empty($config->lockcontent)) $config->lockcontent = false;
-        // Move embedded files into a proper filearea and adjust HTML links to match change proposed by jcockrell.
+        // Move embedded files into a proper filearea and adjust HTML links to match change proposed by jcockrell 
         $config->format = FORMAT_HTML;
+        // $config->text = file_save_draft_area_files($data->text['itemid'], $this->context->id, 'block_editablecontenthtml', 'content', 0, array('subdirs'=>true), $data->text['text']);
+        // $config->format = $data->text['format'];
 
         parent::instance_config_save($config, $nolongerused);
     }
 
-    public function instance_delete() {
+    function instance_delete() {
         global $DB;
         $fs = get_file_storage();
         $fs->delete_area_files($this->context->id, 'block_editablecontenthtml');
         return true;
     }
 
-    public function content_is_trusted() {
+    function content_is_trusted() {
         global $SCRIPT;
 
         if (!$context = context::instance_by_id($this->instance->parentcontextid)) {
@@ -122,7 +123,7 @@ class block_editablecontenthtml extends block_base {
         // Find out if this block is on the profile page.
         if ($context->contextlevel == CONTEXT_USER) {
             if ($SCRIPT === '/my/index.php') {
-                // This is exception - page is completely private, nobody else may see content there that is why we allow JS here.
+                // This is exception - page is completely private, nobody else may see content there that is why we allow JS here
                 return true;
             } else {
                 // No JS on public personal pages, it would be a big security issue.

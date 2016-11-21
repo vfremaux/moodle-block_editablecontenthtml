@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Form for editing HTML block instances.
  *
@@ -22,7 +24,6 @@
  * @copyright  2012 Valery Fremaux (http://www.ethnoinformatique.fr)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
 function block_editablecontenthtml_pluginfile($course, $birecord_or_cm, $context, $filearea, $args, $forcedownload) {
     global $SCRIPT;
@@ -42,21 +43,18 @@ function block_editablecontenthtml_pluginfile($course, $birecord_or_cm, $context
     $filename = array_pop($args);
     $filepath = $args ? '/'.implode('/', $args).'/' : '/';
 
-    if (!$file = $fs->get_file($context->id, 'block_editablecontenthtml', 'content', 0, $filepath, $filename) ||
-            $file->is_directory()) {
+    if (!$file = $fs->get_file($context->id, 'block_editablecontenthtml', 'content', 0, $filepath, $filename) or $file->is_directory()) {
         send_file_not_found();
     }
 
     if ($parentcontext = context::instance_by_id($birecord_or_cm->parentcontextid)) {
         if ($parentcontext->contextlevel == CONTEXT_USER) {
-            /*
-             * force download on all personal pages including /my/
-             * because we do not have reliable way to find out from where this is used
-             */
+            // force download on all personal pages including /my/
+            //because we do not have reliable way to find out from where this is used
             $forcedownload = true;
         }
     } else {
-        // Weird, there should be parent context, better force dowload then.
+        // weird, there should be parent context, better force dowload then
         $forcedownload = true;
     }
 
