@@ -15,21 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details
+ * Version details.
  *
- * @package    block_editablecontenthtml
- * @category   blocks
- * @copyright  2013 Valery Fremaux (valery.fremaux@gmail.com)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     block_editablecontenthtml
+ * @category    blocks
+ * @author      Valery Fremaux <valery.fremaux@gmail.com>
+ * @copyright   2013 onwards Valery Fremaux (http://www.mylearningfactory.com)
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2015032400;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2011120500;        // Requires this Moodle version.
+$plugin->version   = 2016083100;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires  = 2017110800;        // Requires this Moodle version.
 $plugin->component = 'block_editablecontenthtml';  // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_RC;
-$plugin->release = '2.7.0 (build 2013062800)';
+$plugin->release = '3.4.0 (build 2016083100)';
 
 // Non moodle attributes.
-$plugin->codeincrement = '2.7.0000';
+$plugin->codeincrement = '3.4.0000';
