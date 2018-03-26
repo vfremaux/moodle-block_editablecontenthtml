@@ -61,13 +61,13 @@ class block_editablecontenthtml extends block_base {
         $this->content->footer = '';
         if (isset($this->config->text)) {
             // Rewrite url.
-            $text = file_rewrite_pluginfile_urls($this->config->text['text'], 'pluginfile.php', $this->context->id,
+            $text = file_rewrite_pluginfile_urls($this->config->text, 'pluginfile.php', $this->context->id,
                                                  'block_editablecontenthtml', 'content', null);
             /*
              * Default to FORMAT_HTML which is what will have been used before the
              * editor was properly implemented for the block.
              */
-            $format = $this->config->text['format'];
+            $format = $this->config->format;
             // Check to see if the format has been properly set on the config.
             $this->content->text = format_text($text, $format, $filteropt);
         } else {
