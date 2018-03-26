@@ -28,7 +28,7 @@ require($CFG->libdir.'/formslib.php');
 class EditableContentHtmlEditForm extends moodleform {
 
     protected $block;
-    protected $editoroptions;
+    public $editoroptions;
 
     public function __construct(&$block) {
         $this->block = $block;
@@ -69,11 +69,11 @@ class EditableContentHtmlEditForm extends moodleform {
                                                    'config_text_editor', 0, array('subdirs' => true), $defaults->config_text);
             $defaults = file_prepare_standard_editor($defaults, 'config_text', $this->editoroptions, $this->block->context,
                                                      'block_editablecontenthtml', 'content', 0);
-            $defaults->config_text = array('text' => $currenttext,
+            $defaults->config_text_editor = array('text' => $currenttext,
                                            'format' => $defaults->config_textformat,
                                            'itemid' => $draftideditor);
         } else {
-            $defaults->config_text = '';
+            $defaults->config_text_editor = '';
         }
 
         if (!$this->block->user_can_edit() && !empty($this->block->config->title)) {
