@@ -49,7 +49,7 @@ function block_editablecontenthtml_pluginfile($course, $birecordorcm, $context, 
     $filename = array_pop($args);
     $filepath = $args ? '/'.implode('/', $args).'/' : '/';
 
-    if (!$file = $fs->get_file($context->id, 'block_editablecontenthtml', 'content', 0, $filepath, $filename) ||
+    if (!($file = $fs->get_file($context->id, 'block_editablecontenthtml', 'content', 0, $filepath, $filename)) ||
             $file->is_directory()) {
         send_file_not_found();
     }
