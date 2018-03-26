@@ -24,6 +24,14 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * This function is not implemented in this plugin, but is needed to mark
+ * the vf documentation custom volume availability.
+ */
+function block_editablecontenthtml_supports_feature($feature) {
+    assert(1);
+}
+
 function block_editablecontenthtml_pluginfile($course, $birecordorcm, $context, $filearea, $args, $forcedownload) {
 
     if ($context->contextlevel != CONTEXT_BLOCK) {
@@ -59,7 +67,7 @@ function block_editablecontenthtml_pluginfile($course, $birecordorcm, $context, 
         $forcedownload = true;
     }
 
-    session_get_instance()->write_close();
+    \core\session\manager::write_close();
     send_stored_file($file, 60 * 60, 0, $forcedownload);
 }
 
