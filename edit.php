@@ -29,7 +29,7 @@ $id = required_param('id', PARAM_INT);
 
 $PAGE->set_url(new moodle_url('/blocks/editablecontenthtml/edit.php', array('course' => $courseid, 'id' => $id)));
 
-if (!$instance = $DB->get_record('block_instances', array('id' =>  $id))) {
+if (!$instance = $DB->get_record('block_instances', array('id' => $id))) {
     print_error('errorbadblockinstance', 'block_editablecontenthtml');
 }
 
@@ -40,12 +40,12 @@ if (!$course = $DB->get_record('course', array('id' => $courseid))) {
 // Security.
 require_login($course);
 
-$theBlock = block_instance('editablecontenthtml', $instance);
+$theblock = block_instance('editablecontenthtml', $instance);
 $blockcontext = context_block::instance($id);
 
 require_capability('block/editablecontenthtml:editcontent', $blockcontext);
 
-$mform = new EditableContentHtmlEditForm($theBlock);
+$mform = new EditableContentHtmlEditForm($theblock);
 
 if ($mform->is_cancelled()) {
     if ($course->id != SITEID) {
@@ -56,23 +56,23 @@ if ($mform->is_cancelled()) {
 }
 
 if ($data = $mform->get_data()) {
-    if (empty($theBlock->config->lockcontent)) {
-        // change proposed by jcockrell 
-        // $theBlock->config->text = $data->config_text;
+    if (empty($theblock->config->lockcontent)) {
 
-        $draftid_editor = file_get_submitted_draft_itemid('config_text_editor');
-        $data->config_text = file_save_draft_area_files($draftid_editor, $blockcontext->id, 'block_editablecontenthtml', 'content', 0, $mform->editoroptions, $data->config_text_editor['text']);
-        $config = file_postupdate_standard_editor($data, 'config_text', $mform->editoroptions, $blockcontext, 'block_editablecontenthtml', 'content', 0);
+        $draftideditor = file_get_submitted_draft_itemid('config_text_editor');
+        $data->config_text = file_save_draft_area_files($draftideditor, $blockcontext->id, 'block_editablecontenthtml',
+                                                        'content', 0, $mform->editoroptions, $data->config_text_editor['text']);
+        $config = file_postupdate_standard_editor($data, 'config_text', $mform->editoroptions, $blockcontext,
+                                                  'block_editablecontenthtml', 'content', 0);
 
-        if (!isset($theBlock->config)) {
-            $theBlock->config = new StdClass();
+        if (!isset($theblock->config)) {
+            $theblock->config = new StdClass();
         }
 
-        $theBlock->config->text = $config->config_text;
-        unset($theBlock->config->config_text);
-        unset($theBlock->config->config_texttrust);
-        unset($theBlock->config->config_textformat);
-        $theBlock->instance_config_save($theBlock->config);
+        $theblock->config->text = $config->config_text;
+        unset($theblock->config->config_text);
+        unset($theblock->config->config_texttrust);
+        unset($theblock->config->config_textformat);
+        $theblock->instance_config_save($theblock->config);
     }
 
     if ($courseid != SITEID) {
@@ -93,14 +93,14 @@ $data = new StdClass();
 $data->id = $id;
 $data->course = $courseid;
 
-if (!isset($theBlock->config)) {
-    $theBlock->config = new StdClass();
+if (!isset($theblock->config)) {
+    $theblock->config = new StdClass();
 }
 
 // Change proposed by jcockrell.
-$data->text = @$theBlock->config->text;
+$data->text = @$theblock->config->text;
 
-if (!empty($theBlock->config->lockcontent)) {
+if (!empty($theblock->config->lockcontent)) {
     echo $OUTPUT->box(get_string('contentislocked', 'block_editablecontenthtml'));
     echo '<br/>';
     echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id' => $courseid)));
