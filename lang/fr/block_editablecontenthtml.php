@@ -28,6 +28,9 @@ $string['editablecontenthtml:addinstance'] = 'Ajouter un bloc "Html Editable"';
 $string['editablecontenthtml:editcontent'] = 'Changer le contenu';
 $string['editablecontenthtml:myaddinstance'] = 'Ajouter un bloc "Html Editable" à Ma page';
 
+// Privacy
+$string['privacy:metadata'] = 'Le bloc Contenu HTML Editable ne détient directement aucune donnée relative aux utilisateurs.';
+
 $string['blockname'] = 'Bloc HTML Editable';
 $string['pluginname'] = 'Bloc HTML Editable';
 $string['editablecontenthtml'] = 'Bloc HTML Editable';
