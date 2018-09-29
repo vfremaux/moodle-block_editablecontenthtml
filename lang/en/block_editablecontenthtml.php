@@ -27,6 +27,9 @@ $string['editablecontenthtml:addinstance'] = 'Can add an instance';
 $string['editablecontenthtml:myaddinstance'] = 'Can add an instance to My Page';
 $string['editablecontenthtml:editcontent'] = 'Can change content';
 
+// Privacy
+$string['privacy:metadata'] = 'The Editable Content HTML block does not directly store any personal data about any user.';
+
 $string['blockname'] = 'Editable HTML Block';
 $string['pluginname'] = 'Editable HTML Block';
 $string['editablecontenthtml'] = 'Editable HTML Block';
