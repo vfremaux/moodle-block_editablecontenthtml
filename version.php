@@ -30,7 +30,6 @@ $plugin->version   = 2016083100;        // The current plugin version (Date: YYY
 $plugin->requires  = 2020061500;        // Requires this Moodle version.
 $plugin->component = 'block_editablecontenthtml';  // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_RC;
-$plugin->supported = [39,311];
 $plugin->release = '3.9.0 (build 2016083100)';
 
 // Non moodle attributes.
