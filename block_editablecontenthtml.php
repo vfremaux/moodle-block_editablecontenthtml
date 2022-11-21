@@ -59,9 +59,11 @@ class block_editablecontenthtml extends block_base {
 
         $this->content = new stdClass;
         $this->content->footer = '';
+
         if (isset($this->config->text)) {
             // Rewrite url.
-            $text = file_rewrite_pluginfile_urls($this->config->text, 'pluginfile.php', $this->context->id,
+            $text = $this->config->text;
+            $text = file_rewrite_pluginfile_urls($text, 'pluginfile.php', $this->context->id,
                                                  'block_editablecontenthtml', 'content', null);
             /*
              * Default to FORMAT_HTML which is what will have been used before the
@@ -104,6 +106,16 @@ class block_editablecontenthtml extends block_base {
         if (empty($config->lockcontent)) {
             $config->lockcontent = false;
         }
+
+        $context = context_block::instance($this->instance->id);
+        if (is_array($data->text) &&  array_key_exists('itemid', $data->text)) {
+            // Only if returns from config.
+            $config->text = file_save_draft_area_files($data->text['itemid'], $this->context->id, 'block_editablecontenthtml',
+                    'content', 0, array('subdirs' => true), $data->text['text']);
+        } else {
+            $config->text = $data->text;
+        }
+
         // Move embedded files into a proper filearea and adjust HTML links to match change proposed by jcockrell.
         $config->format = FORMAT_HTML;
 

@@ -58,9 +58,12 @@ if ($mform->is_cancelled()) {
 if ($data = $mform->get_data()) {
     if (empty($theblock->config->lockcontent)) {
 
-        $draftideditor = file_get_submitted_draft_itemid('config_text_editor');
+        $draftideditor = file_get_submitted_draft_itemid('config_text');
         $data->config_text = file_save_draft_area_files($draftideditor, $blockcontext->id, 'block_editablecontenthtml',
-                                                        'content', 0, $mform->editoroptions, $data->config_text_editor['text']);
+                                                        'content', 0, $mform->editoroptions, $data->config_text['text']);
+        $data->config_text_editor['text'] = $data->config_text;
+        $data->config_text_editor['format'] = FORMAT_MOODLE;
+
         $config = file_postupdate_standard_editor($data, 'config_text', $mform->editoroptions, $blockcontext,
                                                   'block_editablecontenthtml', 'content', 0);
 
@@ -68,7 +71,7 @@ if ($data = $mform->get_data()) {
             $theblock->config = new StdClass();
         }
 
-        $theblock->config->text = $config->config_text;
+        $theblock->config->text = $config->config_text_editor['text'];
         unset($theblock->config->config_text);
         unset($theblock->config->config_texttrust);
         unset($theblock->config->config_textformat);
