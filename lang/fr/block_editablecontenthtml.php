@@ -33,6 +33,7 @@ $string['privacy:metadata'] = 'Le bloc Contenu HTML Editable ne détient directe
 
 $string['blockname'] = 'Bloc HTML Editable';
 $string['pluginname'] = 'Bloc HTML Editable';
+$string['pluginname_help'] = 'Pour afficher du contenu modifiable sur le cours (selon capacités utilisateur). ';
 $string['editablecontenthtml'] = 'Bloc HTML Editable';
 $string['configtitle'] = 'Titre';
 $string['configcontent'] = 'Contenu';
