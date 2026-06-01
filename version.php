@@ -25,12 +25,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2025011400;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2020060900;        // Requires this Moodle version.
+$plugin->version   = 2026041300;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->requires  = 2025041400;        // Requires this Moodle version.
 $plugin->component = 'block_editablecontenthtml';  // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_RC;
-$plugin->supported = [401, 405];
-$plugin->release = '4.5.0 (build 2016083100)';
+$plugin->supported = [500, 503];
+$plugin->release = '5.1.0 (build 2026041300)';
 
 // Non moodle attributes.
-$plugin->codeincrement = '4.5.0000';
+$plugin->codeincrement = '5.1.0000';
+$plugin->privacy = 'public';

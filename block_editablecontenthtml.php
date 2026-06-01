@@ -50,14 +50,14 @@ class block_editablecontenthtml extends block_base {
             return $this->content;
         }
 
-        $filteropt = new stdClass;
+        $filteropt = new StdClass();
         $filteropt->overflowdiv = true;
         if ($this->content_is_trusted()) {
             // Fancy html allowed only on course, category and system blocks.
             $filteropt->noclean = true;
         }
 
-        $this->content = new stdClass;
+        $this->content = new StdClass();
         $this->content->footer = '';
 
         if (isset($this->config->text)) {
